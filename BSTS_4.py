@@ -1,3 +1,12 @@
+## Tak, rozumiem Pani rozczarowanie. Z premedytacją używam modeli AI, bo to już niestety będą narzędzia przyszłości.
+# Opieranie się temu, to tak jakby kilkanaście lat temu przyjmować postawę: 
+
+# "Nie będę korzystał z edytorów podpowiadających składnię języka i strukturę projektu, danych i klas, bo to pójście na łatwiznę."
+
+# Ale faktem jest, że nie zerknięcie na wyniki wypluwane przez te automaty to z mojej strony całkowite niechlujstwo.
+# Mam nadzieję, że nie poczuła się Pani zlekceważona lub coś w tym rodzaju.
+# Złożyłem w zeszłym roku podania na trzy podyplomówki, z obawy, że z braku chętnych nie otworzą tych kierunków i teraz z Githubem copilotem i ChatGPT ogarniamy te trzy kierunki. Właściwie tylko dwa, ale to zawsze dwa razy tyle co jeden :)
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,10 +14,10 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 """
-Analiza PCA mikrobiomu z trzech środowisk (gleba, woda, jelita).
+Analiza PCA mikrobiomu z trzech srodowisk (gleba, woda, jelita).
 - Wiersze: próbki
 - Kolumny 1..n-1: udziały gatunków
-- Ostatnia kolumna: typ środowiska
+- Ostatnia kolumna: typ srodowiska
 
 OPCJA A: wartości to już procenty
 OPCJA B: wartości to liczby odczytów → konwersja na procenty
@@ -16,7 +25,7 @@ OPCJA B: wartości to liczby odczytów → konwersja na procenty
 Kroki: standaryzacja → PCA (2 składowe) → wykres
 """
 
-# Ścieżka do pliku CSV (DOSTOSUJ DO SWOJEGO PLIKU!)
+# Ścieżka do pliku CSV
 CSV_PATH = "mikrobiom.csv"  # np. "mikrobiom.csv" lub inna nazwa
 
 # Wybierz tryb: False -> OPCJA A (procenty), True -> OPCJA B (liczebności -> procenty)
@@ -24,23 +33,24 @@ OPTION_B_COUNTS = False
 
 
 def load_and_prepare_data(csv_path: str, option_b_counts: bool = False):
-    """Wczytuje dane z CSV i przygotowuje macierz cech oraz etykiety środowisk.
+    """Wczytuje dane z CSV i przygotowuje macierz cech oraz etykiety srodowisk.
 
     Zwraca:
     - X_scaled: standaryzowana macierz cech (próbki x gatunki),
-    - env: wektor etykiet środowisk,
+    - env: wektor etykiet srodowisk,
     - pca: dopasowany obiekt PCA (2 składowe).
     """
-    df = pd.read_csv(csv_path)
+    # Plik mikrobiom.csv jest zapisany z separatorami tabulacji, więc ustawiamy sep="\t".
+    df = pd.read_csv(csv_path, sep="\t")
 
-    # Zakładamy, że ostatnia kolumna to "środowisko"
-    if "środowisko" not in df.columns:
-        raise ValueError("Oczekiwano kolumny 'środowisko' jako ostatniej kolumny w pliku CSV.")
+    # Zakładamy, że ostatnia kolumna to "srodowisko"
+    if "srodowisko" not in df.columns:
+        raise ValueError("Oczekiwano kolumny 'srodowisko' jako ostatniej kolumny w pliku CSV.")
 
-    feature_cols = [c for c in df.columns if c != "środowisko"]
+    feature_cols = [c for c in df.columns if c != "srodowisko"]
 
     X_raw = df[feature_cols].values.astype(float)
-    env = df["środowisko"].values
+    env = df["srodowisko"].values
 
     # OPCJA A vs OPCJA B
     if option_b_counts:
@@ -65,7 +75,7 @@ def load_and_prepare_data(csv_path: str, option_b_counts: bool = False):
 
 
 def plot_pca(X_pca: np.ndarray, env: np.ndarray, pca: PCA):
-    """Rysuje wykres 2D PCA z próbkami pokolorowanymi wg środowiska."""
+    """Rysuje wykres 2D PCA z próbkami pokolorowanymi wg srodowiska."""
     pc1 = X_pca[:, 0]
     pc2 = X_pca[:, 1]
 
@@ -81,7 +91,7 @@ def plot_pca(X_pca: np.ndarray, env: np.ndarray, pca: PCA):
     plt.xlabel(f"PC1 ({pca.explained_variance_ratio_[0] * 100:.1f}% wariancji)")
     plt.ylabel(f"PC2 ({pca.explained_variance_ratio_[1] * 100:.1f}% wariancji)")
     plt.title("PCA mikrobiomu (2 główne składowe)")
-    plt.legend(title="Środowisko")
+    plt.legend(title="srodowisko")
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.show()
@@ -102,10 +112,10 @@ if __name__ == "__main__":
         print("Suma (PC1 + PC2):", f"{pca.explained_variance_ratio_[:2].sum() * 100:.2f}%")
 
         print("\nInterpretacja (ogólne wskazówki):")
-        print("- Na wykresie sprawdź, czy próbki z tego samego środowiska tworzą skupiska.")
+        print("- Na wykresie sprawdź, czy próbki z tego samego srodowiska tworzą skupiska.")
         print("- Jeśli punkty z gleby, wody i jelit wyraźnie się rozdzielają, oznacza to, że główne składowe")
-        print("  dobrze odzwierciedlają różnice między środowiskami.")
-        print("- Jeśli klastry mocno się nachodzą, różnice między środowiskami są słabiej zaznaczone w przestrzeni PCA.")
+        print("  dobrze odzwierciedlają różnice między srodowiskami.")
+        print("- Jeśli klastry mocno się nachodzą, różnice między srodowiskami są słabiej zaznaczone w przestrzeni PCA.")
 
         # Rysowanie wykresu PCA
         plot_pca(X_pca, env, pca)
